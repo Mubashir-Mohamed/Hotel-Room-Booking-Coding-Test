@@ -1,0 +1,76 @@
+<main class="page">
+  <h1>Hotel Room Booking</h1>
+  <p class="subtitle">Choose your dates and a room to see the nights and total price.</p>
+
+  <section class="rooms" aria-labelledby="rooms-heading">
+    <h2 id="rooms-heading">Available Rooms</h2>
+    <div class="room-grid" role="radiogroup" aria-labelledby="rooms-heading">
+      @for (room of rooms; track room.code) {
+        <label class="room-card" [class.selected]="roomCode() === room.code">
+          <input
+            type="radio"
+            name="room"
+            class="room-card__radio"
+            [value]="room.code"
+            [checked]="roomCode() === room.code"
+            (change)="onRoomChange(room.code)"
+          />
+          <span class="room-card__code">{{ room.code }}</span>
+          <span class="room-card__type">{{ room.roomType }}</span>
+          <span class="room-card__price">₹{{ room.pricePerNight | number }} / night</span>
+          <span class="room-card__guests">Max {{ room.maxGuests }} guests</span>
+        </label>
+      }
+    </div>
+  </section>
+
+  <section class="stay" aria-labelledby="stay-heading">
+    <h2 id="stay-heading">Your Stay</h2>
+    <div class="stay-fields">
+      <div class="field">
+        <label for="check-in">Check-in date</label>
+        <input
+          id="check-in"
+          type="date"
+          [min]="minCheckInDate"
+          [value]="checkIn()"
+          (change)="onCheckInChange($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="check-out">Check-out date</label>
+        <input
+          id="check-out"
+          type="date"
+          [min]="minCheckOutDate()"
+          [value]="checkOut()"
+          (change)="onCheckOutChange($event)"
+        />
+      </div>
+    </div>
+  </section>
+
+  @if (touched() && result().errors.length > 0) {
+    <div class="errors" role="alert">
+      <ul>
+        @for (error of result().errors; track error) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    </div>
+  }
+
+  @if (result().quote; as quote) {
+    <section class="summary" role="status" aria-labelledby="summary-heading">
+      <h2 id="summary-heading">Booking Summary</h2>
+      <dl>
+        <dt>Room</dt>
+        <dd>{{ quote.room.code }} — {{ quote.room.roomType }}</dd>
+        <dt>Nights</dt>
+        <dd>{{ quote.nights }}</dd>
+        <dt>Total Price</dt>
+        <dd class="summary__total">₹{{ formattedTotal() }}</dd>
+      </dl>
+    </section>
+  }
+</main>
