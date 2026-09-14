@@ -175,6 +175,18 @@ Keep calculation and validation logic deterministic and easy to test independent
 ### Angular 21
 Prefer standalone components, modern Angular control flow such as `@if` / `@for`, and Signals where they improve clarity.
 
+## Visual Design
+
+The assessment's supplied hotel-management screenshots (main dashboard, guest check-in, guest check-out) are explicitly scoped as visual/context references only — not a specification to reproduce. This app stays a single booking page, but borrows the reference's visual language:
+
+- A branded top bar ("RH" mark + "Raintech Hotel" wordmark).
+- Navy section-header bars on card containers, echoing the reference dashboard's card/header style.
+- Warm amber room-code badges, similar to the reference's room-number chips.
+- A navy highlight for the selected room and a teal accent header on the booking summary.
+- A light-gray page background behind white cards, matching the dashboard's card-on-gray layout.
+
+No functionality from the reference screens (search, notifications, multi-step wizards, room-status floor view, etc.) was added — only the color palette, typography treatment and card styling.
+
 ## Out of Scope
 
 The following are deliberately excluded:
