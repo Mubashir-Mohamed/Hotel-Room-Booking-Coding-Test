@@ -1,12 +1,57 @@
 :host {
+  --navy: #173a56;
+  --navy-dark: #102a3f;
+  --teal: #0f9488;
+  --teal-dark: #0c766c;
+  --amber-bg: #f3e0b8;
+  --amber-border: #c9a668;
+  --amber-text: #6b5323;
+  --page-bg: #f2f4f7;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1f2937;
+  --text-muted: #4b5563;
+
   display: block;
+  min-height: 100%;
+  background: var(--page-bg);
   font-family:
     system-ui,
     -apple-system,
     'Segoe UI',
     Roboto,
     sans-serif;
-  color: #1f2937;
+  color: var(--text);
+}
+
+.brand-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand-bar__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.brand-bar__name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--navy);
+  letter-spacing: 0.01em;
 }
 
 .page {
@@ -17,21 +62,42 @@
 
 h1 {
   margin-bottom: 0.25rem;
-  font-size: 1.75rem;
+  font-size: 1.6rem;
+  color: var(--text);
 }
 
 .subtitle {
   margin-top: 0;
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
-h2 {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
+.card {
+  margin-top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(16, 42, 63, 0.08);
 }
 
-section {
-  margin-top: 2rem;
+.card__header {
+  padding: 0.65rem 1.25rem;
+  background: var(--navy);
+}
+
+.card__header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.card__header--accent {
+  background: var(--teal-dark);
+}
+
+.card__body {
+  padding: 1.1rem 1.25rem 1.25rem;
 }
 
 .room-grid {
@@ -44,13 +110,14 @@ section {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  gap: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 0.75rem;
   cursor: pointer;
   transition:
     border-color 0.15s,
+    background-color 0.15s,
     box-shadow 0.15s;
 }
 
@@ -59,8 +126,9 @@ section {
 }
 
 .room-card.selected {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 1px #2563eb;
+  border-color: var(--navy);
+  background: #eaf0f5;
+  box-shadow: 0 0 0 1px var(--navy);
 }
 
 .room-card__radio {
@@ -68,11 +136,18 @@ section {
   top: 0.6rem;
   right: 0.6rem;
   margin: 0;
+  accent-color: var(--navy);
 }
 
-.room-card__code {
-  font-weight: 600;
-  font-size: 0.95rem;
+.room-card__badge {
+  align-self: flex-start;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--amber-text);
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .room-card__type {
@@ -80,11 +155,12 @@ section {
 }
 
 .room-card__price {
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .room-card__guests {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
@@ -103,13 +179,20 @@ section {
 .field label {
   font-size: 0.9rem;
   font-weight: 500;
+  color: var(--text-muted);
 }
 
 .field input[type='date'] {
   padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1rem;
+  color: var(--text);
+}
+
+.field input[type='date']:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
 }
 
 .errors {
@@ -117,7 +200,7 @@ section {
   padding: 0.75rem 1rem;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #b91c1c;
 }
 
@@ -126,30 +209,28 @@ section {
   padding-left: 1.1rem;
 }
 
-.summary {
-  padding: 1rem 1.25rem;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 8px;
+.card--summary .card__body {
+  background: #f0fbf9;
 }
 
-.summary dl {
+.card--summary dl {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.4rem 1rem;
   margin: 0;
 }
 
-.summary dt {
+.card--summary dt {
   font-weight: 500;
-  color: #166534;
+  color: var(--teal-dark);
 }
 
-.summary dd {
+.card--summary dd {
   margin: 0;
 }
 
 .summary__total {
   font-weight: 700;
   font-size: 1.15rem;
+  color: var(--navy);
 }

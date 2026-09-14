@@ -1,51 +1,64 @@
+<header class="brand-bar">
+  <span class="brand-bar__mark" aria-hidden="true">RH</span>
+  <span class="brand-bar__name">Raintech Hotel</span>
+</header>
+
 <main class="page">
-  <h1>Hotel Room Booking</h1>
+  <h1>Room Booking</h1>
   <p class="subtitle">Choose your dates and a room to see the nights and total price.</p>
 
-  <section class="rooms" aria-labelledby="rooms-heading">
-    <h2 id="rooms-heading">Available Rooms</h2>
-    <div class="room-grid" role="radiogroup" aria-labelledby="rooms-heading">
-      @for (room of rooms; track room.code) {
-        <label class="room-card" [class.selected]="roomCode() === room.code">
-          <input
-            type="radio"
-            name="room"
-            class="room-card__radio"
-            [value]="room.code"
-            [checked]="roomCode() === room.code"
-            (change)="onRoomChange(room.code)"
-          />
-          <span class="room-card__code">{{ room.code }}</span>
-          <span class="room-card__type">{{ room.roomType }}</span>
-          <span class="room-card__price">₹{{ room.pricePerNight | number }} / night</span>
-          <span class="room-card__guests">Max {{ room.maxGuests }} guests</span>
-        </label>
-      }
+  <section class="card" aria-labelledby="rooms-heading">
+    <div class="card__header">
+      <h2 id="rooms-heading">Available Rooms</h2>
+    </div>
+    <div class="card__body">
+      <div class="room-grid" role="radiogroup" aria-labelledby="rooms-heading">
+        @for (room of rooms; track room.code) {
+          <label class="room-card" [class.selected]="roomCode() === room.code">
+            <input
+              type="radio"
+              name="room"
+              class="room-card__radio"
+              [value]="room.code"
+              [checked]="roomCode() === room.code"
+              (change)="onRoomChange(room.code)"
+            />
+            <span class="room-card__badge">{{ room.code }}</span>
+            <span class="room-card__type">{{ room.roomType }}</span>
+            <span class="room-card__price">₹{{ room.pricePerNight | number }} / night</span>
+            <span class="room-card__guests">Max {{ room.maxGuests }} guests</span>
+          </label>
+        }
+      </div>
     </div>
   </section>
 
-  <section class="stay" aria-labelledby="stay-heading">
-    <h2 id="stay-heading">Your Stay</h2>
-    <div class="stay-fields">
-      <div class="field">
-        <label for="check-in">Check-in date</label>
-        <input
-          id="check-in"
-          type="date"
-          [min]="minCheckInDate"
-          [value]="checkIn()"
-          (change)="onCheckInChange($event)"
-        />
-      </div>
-      <div class="field">
-        <label for="check-out">Check-out date</label>
-        <input
-          id="check-out"
-          type="date"
-          [min]="minCheckOutDate()"
-          [value]="checkOut()"
-          (change)="onCheckOutChange($event)"
-        />
+  <section class="card" aria-labelledby="stay-heading">
+    <div class="card__header">
+      <h2 id="stay-heading">Your Stay</h2>
+    </div>
+    <div class="card__body">
+      <div class="stay-fields">
+        <div class="field">
+          <label for="check-in">Check-in date</label>
+          <input
+            id="check-in"
+            type="date"
+            [min]="minCheckInDate"
+            [value]="checkIn()"
+            (change)="onCheckInChange($event)"
+          />
+        </div>
+        <div class="field">
+          <label for="check-out">Check-out date</label>
+          <input
+            id="check-out"
+            type="date"
+            [min]="minCheckOutDate()"
+            [value]="checkOut()"
+            (change)="onCheckOutChange($event)"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -61,16 +74,20 @@
   }
 
   @if (result().quote; as quote) {
-    <section class="summary" role="status" aria-labelledby="summary-heading">
-      <h2 id="summary-heading">Booking Summary</h2>
-      <dl>
-        <dt>Room</dt>
-        <dd>{{ quote.room.code }} — {{ quote.room.roomType }}</dd>
-        <dt>Nights</dt>
-        <dd>{{ quote.nights }}</dd>
-        <dt>Total Price</dt>
-        <dd class="summary__total">₹{{ formattedTotal() }}</dd>
-      </dl>
+    <section class="card card--summary" role="status" aria-labelledby="summary-heading">
+      <div class="card__header card__header--accent">
+        <h2 id="summary-heading">Booking Summary</h2>
+      </div>
+      <div class="card__body">
+        <dl>
+          <dt>Room</dt>
+          <dd>{{ quote.room.code }} — {{ quote.room.roomType }}</dd>
+          <dt>Nights</dt>
+          <dd>{{ quote.nights }}</dd>
+          <dt>Total Price</dt>
+          <dd class="summary__total">₹{{ formattedTotal() }}</dd>
+        </dl>
+      </div>
     </section>
   }
 </main>

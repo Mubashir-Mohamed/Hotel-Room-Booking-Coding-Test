@@ -14,11 +14,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the page heading and all five sample rooms', async () => {
+  it('should render the brand bar, page heading and all five sample rooms', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hotel Room Booking');
+    expect(compiled.querySelector('.brand-bar__name')?.textContent).toContain('Raintech Hotel');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Room Booking');
     expect(compiled.querySelectorAll('.room-card').length).toBe(5);
   });
 
@@ -26,6 +27,6 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.summary')).toBeNull();
+    expect(compiled.querySelector('.card--summary')).toBeNull();
   });
 });
