@@ -3,7 +3,7 @@
 ## Task
 
 - Name: Raintech Hotel Booking Coding Test
-- Status: CORE_COMPLETE + VISUAL_RESTYLE_COMPLETE + REVIEWED — reviewed by code-quality/security/performance/ship-readiness agents, minor findings fixed. Ready for handover. Bonus work on hold per user.
+- Status: CORE_COMPLETE + VISUAL_RESTYLE_COMPLETE + REVIEWED + BONUS_FEATURES_COMPLETE.
 - Date: 2026-09-15
 - Branch: main
 
@@ -13,10 +13,11 @@ Build and submit a small single-page hotel room booking application for the Rain
 
 ## Current state
 
-- Repository: was previously docs-only at the start of this session's work. Angular 21.2 standalone app scaffolded and the core booking feature implemented, tested, and committed (see prior "Completed work" below).
+- Repository: Angular 21.2 standalone app. Core booking feature, visual restyle, a pre-handover review pass, and both optional bonus features are implemented, tested, and committed (see "Completed work" below).
+- This session located the actual requirement doc (`Hotel_Booking_Coding_Test.docx`, in `~/Downloads`) and cross-checked every core functional/validation requirement against the implementation before starting bonus work — all confirmed present and correct (30/30 tests passing at that point).
 - A follow-up restyle pass adopted the visual language of the assessment's three supplied hotel-management screenshots (main dashboard, guest check-in, guest check-out) — those images are explicitly out-of-scope as a *feature* spec (per CLAUDE.md/README "Out of Scope"), but were used here purely for color palette/typography/card-styling inspiration, confirmed with the user before implementing.
-- All commits pushed to `origin/main`. Working tree is clean.
-- User has explicitly asked to **hold** on the two optional bonus items until further instruction — do not start them without being asked again.
+- Note: commit `d9227ed` ("Apply pre-handover review fixes...") was made by a separate, concurrently-running Claude Code session (see its `Claude-Session:` trailer) — not this session. It landed cleanly as an ancestor before this session's bonus-feature commits; no conflict.
+- Both optional bonus items are now implemented and committed locally. **Not yet pushed to `origin/main`** — push wasn't requested this session.
 
 ## Completed work
 
@@ -51,32 +52,34 @@ Ran the four custom review subagents (code-quality-reviewer, security-guardian, 
 - Added `changeDetection: ChangeDetectionStrategy.OnPush` to `src/app/app.ts` — the component is 100% signals-driven, so this is a correctness-neutral idiom fix, not a functional change. Verified: build ✅, 30/30 tests ✅.
 - Removed unused `@angular/forms` and `@angular/router` from `package.json` dependencies (never imported anywhere in `src/`, confirmed via grep) and ran `npm install` to update `package-lock.json`. Bundle size unchanged (128 kB) since they were already tree-shaken out — this was a dependency-hygiene fix per CLAUDE.md's "don't add dependencies unless justified." Verified: build ✅, 30/30 tests ✅.
 
-## Not yet done (optional bonus — on hold, do not start without being asked)
-
-- Hardcoded existing-booking overlap prevention.
-- Guest-count filtering.
-
-User said "hold implementing anything for now" — wait for explicit go-ahead before touching these.
+### Bonus features (this pass)
+- `src/app/booking/date-utils.ts` — added `rangesOverlap(aStart, aEnd, bStart, bEnd)`, exclusive-end interval overlap check (back-to-back stays are not a conflict).
+- `src/app/booking/existing-bookings.ts` (new) — `ExistingBooking` type + `getExistingBookings(today)`: two hardcoded sample bookings (R101, R201) expressed as day-offsets from `today` rather than fixed calendar dates, so the demo stays reachable through the check-in date picker no matter when the app is actually run.
+- `src/app/booking/booking-validation.ts` — `validateBooking()` gained an optional `bookings` parameter (defaults to `[]`, so all prior call sites/tests are unaffected); rejects a room/date combination that overlaps an existing booking for that same room, only once the room and date range are each already individually valid.
+- `src/app/app.ts` — `bookings` field (from `getExistingBookings(this.today)`), `unavailableRoomCodes` computed (rooms conflicting with the *currently selected* dates), `minGuests` signal + `visibleRooms` computed (guest-count filter), `onMinGuestsChange()` (clears the room selection if the new filter would hide it).
+- `src/app/app.html` / `app.css` — a "Guests" filter `<select>` above the room grid; a booked room's radio is `[disabled]` with a "Booked for these dates" note and dimmed styling.
+- Tests: 4 new `rangesOverlap` cases, 5 new `validateBooking`-with-bookings cases, 3 new UI tests (guest filter, selection-clearing on filter change, disabled/booked room) — 42/42 passing.
+- Manually verified in a real browser via Chrome automation: guest filter narrows the list correctly (4+ → only Family Room); entering the hardcoded R101 booking's dates disables R101 with the "Booked for these dates" note while other rooms remain selectable and produce a correct quote.
 
 ## Verification
 
 | Check | Command | Result |
 |---|---|---|
 | Build | `npm run build` | PASS |
-| Tests | `npm test` | PASS — 30/30 (3 files) |
+| Tests | `npm test` | PASS — 42/42 (3 files) |
 | Lint | none configured in this repo (no ESLint schematic added) | N/A |
-| Manual browser check | `ng serve`, exercised via Chrome automation | PASS (multiple scenarios, both before and after the restyle) |
+| Manual browser check | `ng serve`, exercised via Chrome automation | PASS — core flow, restyle, and both bonus features all exercised |
 
 ## Git state
 
-- Branch `main`, all work committed and pushed to `origin/main`.
-- Commit history (newest first) for this work: restyle → tests/gitignore-fix/handoff → app+logic → scaffold → (prior session's doc commits).
+- Branch `main`, **committed locally, not pushed**.
+- Commit history (newest first) for this work: docs (bonus) → UI wiring (bonus) → domain logic (bonus) → pre-handover review fixes (separate concurrent session) → restyle/docs → tests/gitignore-fix → app+logic → scaffold → (prior session's doc commits).
 - Working tree clean as of this update.
 
 ## Next action
 
-None pending — reviewed and ready for handover. Awaiting the user's next instruction. Do not start the optional bonus features (booking-overlap prevention, guest-count filtering) without being explicitly asked.
+Push to `origin/main` when the user asks (not done yet this session), then share the repository link per the assessment's submission instructions. No further bonus work remains — both optional items from the requirement doc are implemented.
 
 ## Last updated
 
-2026-09-15 (this session — pre-handover review pass)
+2026-09-15 (this session — bonus features implemented, tested, and verified against the actual requirement doc)
