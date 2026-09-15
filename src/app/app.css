@@ -131,6 +131,18 @@ h1 {
   box-shadow: 0 0 0 1px var(--navy);
 }
 
+.room-card.unavailable {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.room-card__unavailable {
+  align-self: flex-start;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 .room-card__radio {
   position: absolute;
   top: 0.6rem;
@@ -182,17 +194,27 @@ h1 {
   color: var(--text-muted);
 }
 
-.field input[type='date'] {
+.field input[type='date'],
+.field select {
   padding: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1rem;
   color: var(--text);
+  background: var(--surface);
 }
 
-.field input[type='date']:focus-visible {
+.field input[type='date']:focus-visible,
+.field select:focus-visible {
   outline: 2px solid var(--teal);
   outline-offset: 1px;
+}
+
+.field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .errors {

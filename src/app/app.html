@@ -12,21 +12,41 @@
       <h2 id="rooms-heading">Available Rooms</h2>
     </div>
     <div class="card__body">
+      <div class="field field--inline">
+        <label for="min-guests">Guests</label>
+        <select id="min-guests" (change)="onMinGuestsChange($event)">
+          <option value="0">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+
       <div class="room-grid" role="radiogroup" aria-labelledby="rooms-heading">
-        @for (room of rooms; track room.code) {
-          <label class="room-card" [class.selected]="roomCode() === room.code">
+        @for (room of visibleRooms(); track room.code) {
+          @let isBooked = unavailableRoomCodes().has(room.code);
+          <label
+            class="room-card"
+            [class.selected]="roomCode() === room.code"
+            [class.unavailable]="isBooked"
+          >
             <input
               type="radio"
               name="room"
               class="room-card__radio"
               [value]="room.code"
               [checked]="roomCode() === room.code"
+              [disabled]="isBooked"
               (change)="onRoomChange(room.code)"
             />
             <span class="room-card__badge">{{ room.code }}</span>
             <span class="room-card__type">{{ room.roomType }}</span>
             <span class="room-card__price">₹{{ room.pricePerNight | number }} / night</span>
             <span class="room-card__guests">Max {{ room.maxGuests }} guests</span>
+            @if (isBooked) {
+              <span class="room-card__unavailable">Booked for these dates</span>
+            }
           </label>
         }
       </div>
