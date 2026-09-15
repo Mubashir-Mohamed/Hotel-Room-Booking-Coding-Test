@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { validateBooking } from './booking/booking-validation';
 import { addDays, parseLocalDate, toIsoDateString } from './booking/date-utils';
 import { ROOMS } from './models/room.model';
@@ -9,6 +9,7 @@ import { ROOMS } from './models/room.model';
   imports: [DecimalPipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly rooms = ROOMS;

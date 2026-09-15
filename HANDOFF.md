@@ -3,7 +3,7 @@
 ## Task
 
 - Name: Raintech Hotel Booking Coding Test
-- Status: CORE_COMPLETE + VISUAL_RESTYLE_COMPLETE — pushed to origin. Bonus work on hold per user.
+- Status: CORE_COMPLETE + VISUAL_RESTYLE_COMPLETE + REVIEWED — reviewed by code-quality/security/performance/ship-readiness agents, minor findings fixed. Ready for handover. Bonus work on hold per user.
 - Date: 2026-09-15
 - Branch: main
 
@@ -38,6 +38,19 @@ Build and submit a small single-page hotel room booking application for the Rain
 - `angular.json` picked up an `analytics: false` entry that the Angular CLI itself appended on a non-interactive run (telemetry opt-out) — not a manual edit, called out separately in the commit message.
 - Verified: `npm run build` ✅, `npm test` ✅ 30/30, manually exercised in a real browser (room select, date entry, summary render) — all correct with the new styling.
 
+## Pre-handover review (this pass)
+
+Ran the four custom review subagents (code-quality-reviewer, security-guardian, perf-investigator, ship-readiness) against the current state:
+
+- **Code quality**: clean. No duplication, no dead code, naming consistent, architecture matches CLAUDE.md's separation rules exactly. Two low-severity notes (both accepted as-is, no action needed): `today` is captured once at component construction rather than re-read (harmless for a single-session SPA); `app.spec.ts` doesn't drive the input-change handlers to exercise the error/summary DOM wiring (the underlying logic is fully covered by `booking-validation.spec.ts`).
+- **Security**: clean. No unsafe sinks (`innerHTML`, `bypassSecurityTrust*`, `eval`), no unvalidated input reaching the DOM, `npm audit` 0 vulnerabilities, no secrets/`.env` committed.
+- **Performance**: clean at this scale (128 kB bundle, no HTTP/RxJS, well under budget). Two nits, both fixed in this pass (see below).
+- **Ship readiness**: **GO**. Build/tests pass, git clean and pushed, README/HANDOFF claims verified against actual code.
+
+### Fixes applied from the performance review
+- Added `changeDetection: ChangeDetectionStrategy.OnPush` to `src/app/app.ts` — the component is 100% signals-driven, so this is a correctness-neutral idiom fix, not a functional change. Verified: build ✅, 30/30 tests ✅.
+- Removed unused `@angular/forms` and `@angular/router` from `package.json` dependencies (never imported anywhere in `src/`, confirmed via grep) and ran `npm install` to update `package-lock.json`. Bundle size unchanged (128 kB) since they were already tree-shaken out — this was a dependency-hygiene fix per CLAUDE.md's "don't add dependencies unless justified." Verified: build ✅, 30/30 tests ✅.
+
 ## Not yet done (optional bonus — on hold, do not start without being asked)
 
 - Hardcoded existing-booking overlap prevention.
@@ -62,8 +75,8 @@ User said "hold implementing anything for now" — wait for explicit go-ahead be
 
 ## Next action
 
-None pending — awaiting the user's next instruction. Do not start the optional bonus features (booking-overlap prevention, guest-count filtering) without being explicitly asked.
+None pending — reviewed and ready for handover. Awaiting the user's next instruction. Do not start the optional bonus features (booking-overlap prevention, guest-count filtering) without being explicitly asked.
 
 ## Last updated
 
-2026-09-15 (this session)
+2026-09-15 (this session — pre-handover review pass)
