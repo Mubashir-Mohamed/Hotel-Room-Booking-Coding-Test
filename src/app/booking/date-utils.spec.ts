@@ -3,6 +3,7 @@ import {
   addDays,
   calculateNights,
   parseLocalDate,
+  rangesOverlap,
   startOfDay,
   toIsoDateString,
 } from './date-utils';
@@ -98,5 +99,31 @@ describe('calculateNights', () => {
     const checkIn = parseLocalDate('2026-05-30')!;
     const checkOut = parseLocalDate('2026-06-02')!;
     expect(calculateNights(checkIn, checkOut)).toBe(3);
+  });
+});
+
+describe('rangesOverlap', () => {
+  it('detects an overlap when one range starts inside the other', () => {
+    const a = [parseLocalDate('2026-05-10')!, parseLocalDate('2026-05-15')!] as const;
+    const b = [parseLocalDate('2026-05-12')!, parseLocalDate('2026-05-18')!] as const;
+    expect(rangesOverlap(...a, ...b)).toBe(true);
+  });
+
+  it('detects an overlap when one range fully contains the other', () => {
+    const a = [parseLocalDate('2026-05-10')!, parseLocalDate('2026-05-20')!] as const;
+    const b = [parseLocalDate('2026-05-12')!, parseLocalDate('2026-05-14')!] as const;
+    expect(rangesOverlap(...a, ...b)).toBe(true);
+  });
+
+  it('does not treat back-to-back stays as overlapping (checkout day is exclusive)', () => {
+    const a = [parseLocalDate('2026-05-10')!, parseLocalDate('2026-05-15')!] as const;
+    const b = [parseLocalDate('2026-05-15')!, parseLocalDate('2026-05-18')!] as const;
+    expect(rangesOverlap(...a, ...b)).toBe(false);
+  });
+
+  it('does not treat separated ranges as overlapping', () => {
+    const a = [parseLocalDate('2026-05-10')!, parseLocalDate('2026-05-12')!] as const;
+    const b = [parseLocalDate('2026-05-20')!, parseLocalDate('2026-05-22')!] as const;
+    expect(rangesOverlap(...a, ...b)).toBe(false);
   });
 });

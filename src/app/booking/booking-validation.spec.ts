@@ -139,3 +139,68 @@ describe('validateBooking', () => {
     expect(result.errors.length).toBeGreaterThan(1);
   });
 });
+
+describe('validateBooking with existing bookings', () => {
+  const EXISTING = [
+    { roomCode: 'R101', checkIn: new Date(2026, 4, 20), checkOut: new Date(2026, 4, 23) },
+  ];
+
+  it('rejects a room already booked for an overlapping range', () => {
+    const result = validateBooking(
+      { checkIn: '2026-05-21', checkOut: '2026-05-25', roomCode: 'R101' },
+      ROOMS,
+      TODAY,
+      EXISTING,
+    );
+
+    expect(result.quote).toBeNull();
+    expect(result.errors).toContain('Selected room is already booked for the chosen dates.');
+  });
+
+  it('allows a different room for the same overlapping dates', () => {
+    const result = validateBooking(
+      { checkIn: '2026-05-21', checkOut: '2026-05-25', roomCode: 'R102' },
+      ROOMS,
+      TODAY,
+      EXISTING,
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(result.quote).not.toBeNull();
+  });
+
+  it('allows the same room for non-overlapping dates', () => {
+    const result = validateBooking(
+      { checkIn: '2026-06-01', checkOut: '2026-06-03', roomCode: 'R101' },
+      ROOMS,
+      TODAY,
+      EXISTING,
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(result.quote).not.toBeNull();
+  });
+
+  it('allows a back-to-back stay starting the day the existing booking checks out', () => {
+    const result = validateBooking(
+      { checkIn: '2026-05-23', checkOut: '2026-05-25', roomCode: 'R101' },
+      ROOMS,
+      TODAY,
+      EXISTING,
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(result.quote).not.toBeNull();
+  });
+
+  it('defaults to no existing bookings when the parameter is omitted', () => {
+    const result = validateBooking(
+      { checkIn: '2026-05-21', checkOut: '2026-05-25', roomCode: 'R101' },
+      ROOMS,
+      TODAY,
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(result.quote).not.toBeNull();
+  });
+});

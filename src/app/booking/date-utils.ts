@@ -55,3 +55,13 @@ export function addDays(date: Date, days: number): Date {
 export function calculateNights(checkIn: Date, checkOut: Date): number {
   return Math.round((checkOut.getTime() - checkIn.getTime()) / MS_PER_DAY);
 }
+
+/**
+ * True when stay [aStart, aEnd) overlaps stay [bStart, bEnd). Each end date
+ * is exclusive (the checkout day itself is not an occupied night), so a
+ * check-in that lands exactly on another stay's checkout day does not count
+ * as a conflict.
+ */
+export function rangesOverlap(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
+  return aStart.getTime() < bEnd.getTime() && aEnd.getTime() > bStart.getTime();
+}
