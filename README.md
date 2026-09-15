@@ -15,6 +15,8 @@ The assessment is intentionally scoped to a 2–3 hour exercise. The solution fo
 - Reject same-day or reversed date ranges.
 - Display clear validation messages.
 - Handle calendar dates without timezone/off-by-one calculation issues.
+- Prevent selecting a room already booked for the chosen dates (bonus).
+- Filter the room list by minimum guest count (bonus).
 
 ## Room Data
 
@@ -142,21 +144,30 @@ The check-out date is not counted as a night.
 5. Same-day check-in/check-out is invalid.
 6. A room must be selected.
 7. Invalid input must produce a clear user-facing message.
+8. A room already booked (against the hardcoded sample bookings) for the chosen dates cannot be selected.
+
+## Bonus Features
+
+### Room availability against existing bookings
+A small hardcoded set of sample bookings (`src/app/booking/existing-bookings.ts`) is checked against the selected room and date range. A conflicting room's radio button is disabled in the UI with a "Booked for these dates" note, and `validateBooking()` independently rejects the same conflict as a defense-in-depth check. The sample bookings are expressed as offsets from "today" (e.g. today + 3 days) rather than fixed calendar dates, so the feature stays demonstrable no matter when the app is run — a fixed date would eventually fall into the past and become unreachable through the check-in date picker. Back-to-back stays (one check-out date equal to another booking's check-in date) are correctly treated as non-overlapping.
+
+### Filter rooms by guest count
+A "Guests" dropdown above the room list (Any, 1+, 2+, 3+, 4+) filters the visible rooms to those with `maxGuests` at or above the selected value. If the currently selected room is filtered out of view, the selection is cleared so a hidden room can't remain silently selected.
 
 ## Project Structure
-
-The exact structure follows the Angular project in the repository. A typical structure is:
 
 ```text
 src/
 └── app/
-    ├── components/     # UI components
-    ├── models/         # Room/booking types
-    ├── services/       # Domain/application services when needed
-    ├── utils/          # Pure calculation/validation helpers
-    └── ...
+    ├── app.ts / app.html / app.css   # The single booking page (UI + local state)
+    ├── models/
+    │   └── room.model.ts             # Hardcoded sample room data
+    └── booking/
+        ├── date-utils.ts             # Pure date helpers (parsing, night count, range overlap)
+        ├── existing-bookings.ts      # Hardcoded sample bookings for the availability check
+        └── booking-validation.ts     # Framework-free validation + pricing
 
-tests/                  # Focused tests where configured
+*.spec.ts files sit next to the source file they test.
 ```
 
 Keep the implementation small and avoid unnecessary abstractions.
@@ -210,11 +221,9 @@ The supplied hotel-management screenshots are **visual/context references only**
 
 The assessment lists these as bonus features:
 
-- Prevent selecting a room already booked for the chosen dates.
-- Add a basic unit test for night/price calculation.
-- Filter rooms by maximum guests.
-
-These should only be added after the core requirements are complete and verified.
+- Prevent selecting a room already booked for the chosen dates. ✅ Implemented.
+- Add a basic unit test for night/price calculation. ✅ Implemented (part of the core test suite).
+- Filter rooms by maximum guests. ✅ Implemented.
 
 ## Git Workflow
 
@@ -233,8 +242,6 @@ Keep commits focused and avoid destructive Git operations.
 
 ## What I Would Improve With More Time
 
-- Room availability against existing bookings.
-- Guest-count filtering.
 - Broader unit/component test coverage.
 - End-to-end tests for the booking flow.
 - Improved accessibility and keyboard navigation.
